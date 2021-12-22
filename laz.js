@@ -12,8 +12,8 @@ function copyToClipBoard(text) {
     $temp.remove();
 }
 
-function showToys(canDel = 0) {
-    console.log("inject");
+function injectToys(canDel = 0) {
+    console.log("inject toys");
     $(".toy").remove();
     $("a[data-spm='d_action_edit']").each(function(index) {
         var words = $(this).attr('href').split('productId=');
@@ -37,25 +37,26 @@ function showToys(canDel = 0) {
         ulink.appendTo($(this));
         if (canDel) {
             var href = toyProductDel + "?skus=" + sku;
-            var ulink = $('<a class="toy" href="' + href + '" target="_blank">DEL</a>');
+            var dlink = $('<a class="toy" href="' + href + '" target="_blank">&nbsp;DEL</a>');
+            dlink.appendTo($(this));
         }
     });
 }
 
 setTimeout(function() {
-    setTimeout(showToys(), 2000);
+    setTimeout(injectToys(), 2000);
 
     var body = $("body");
     var container = $('<div class="dialog"></div>');
     container.prependTo(body);
     container.dialog({
-        position: { my: "left top", at: "left top" }
+        position: { my: "left bottom", at: "left bottom" }
     });
 
-    var btn = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Show toys"/>');
+    var btn = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Inject toys"/>');
     btn.appendTo(container);
     btn.click(function() {
-        showToys();
+        injectToys();
     });
 
     // show button copy URL
@@ -74,7 +75,7 @@ setTimeout(function() {
     var btn11 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="DEL"/>');
     btn11.appendTo(container);
     btn11.click(function() {
-        showToys(1);
+        injectToys(1);
     });
 
     var btn2 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Hiện 50"/>');
@@ -172,7 +173,7 @@ setTimeout(function() {
                 if (callbackTimer2) {
                     clearTimeout(callbackTimer2);
                 }
-                callbackTimer2 = setTimeout(inject(), 2000);
+                callbackTimer2 = setTimeout(injectToys(), 2000);
                 return true; // break loop
             }
 
