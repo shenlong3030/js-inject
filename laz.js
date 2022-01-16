@@ -105,7 +105,7 @@ setTimeout(function() {
                     cb.click();
                 }
             });
-        }, 2000);
+        }, 500);
     });
 
     // button print MaVanChuyen
