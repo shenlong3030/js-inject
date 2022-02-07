@@ -3,6 +3,7 @@ var lazUrl = "https://www.lazada.vn/"; //-i1358457802.html
 var toyProductsUrl = "https://toy1.phukiensh.com/lazop/products.php";
 var toyProductUpdateUrl = "https://toy1.phukiensh.com/lazop/update_gui.php";
 var toyProductDel = "https://toy1.phukiensh.com/lazop/del.php";
+var toyProductUpdateApiUrl = "https://toy1.phukiensh.com/lazop/update-api.php";
 
 function copyToClipBoard(text) {
     var $temp = $("<textarea>");
@@ -23,22 +24,40 @@ function injectToys(canDel = 0) {
         var editStockDiv = productNode.find("div.edit-stock").first();
         var lazLink = productNode.find("a.item-detail-name").first();
         if (lazLink.length === 0) { //inactive product
-            var href = toyProductUpdateUrl + "?item_id=" + itemId;
+            var href = toyProductUpdateApiUrl + "?item_id=" + itemId;
             var alink = $('<a class="toy" href="' + href + '" target="_blank">Reactivate</a>');
             alink.appendTo(editStockDiv);
         }
     });
 
-    $("span.copy-item").each(function() {
-        words = $(this).text().trim().split('Seller Sku:');;
-        var sku = words[words.length - 1].trim();
+    $("span.copy-item .high-light-word").each(function() {
+        var rowNode = $(this).closest("tr");
+        var priceCell = rowNode.find("td[data-next-table-col=2] div").first();
+        var qtyCell = rowNode.find("td[data-next-table-col=3] div").first();
+        
+        var sku = $(this).text().trim();
         var href = toyProductUpdateUrl + "?sku=" + sku;
         var ulink = $('<a class="toy" href="' + href + '" target="_blank">Update</a>');
-        ulink.appendTo($(this));
+        ulink.appendTo(priceCell);
+        
+        var currentQty = qtyCell.text() + 0;
+        if(currentQty.includes("H") || currentQty < 100 ) {
+            var href = toyProductUpdateApiUrl + "?sku=" + sku + "&qty=500&action=qty";
+            var qty500Link = $('<a class="toy" href="' + href + '" target="_blank">+500</a>');
+            $('<br>').appendTo(qtyCell);
+            qty500Link.appendTo(qtyCell);
+        }
+        if(currentQty > 0) {
+            var href = toyProductUpdateApiUrl + "?sku=" + sku + "&qty=0&action=qty";
+            var qty0Link = $('<a class="toy" href="' + href + '" target="_blank">=0</a>');
+            $('<br>').appendTo(qtyCell);
+            qty0Link.appendTo(qtyCell);
+        }
+        
         if (canDel) {
             var href = toyProductDel + "?skus=" + sku;
             var dlink = $('<a class="toy" href="' + href + '" target="_blank">&nbsp;DEL</a>');
-            dlink.appendTo($(this));
+            dlink.appendTo(priceCell);
         }
     });
 }
