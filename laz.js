@@ -102,6 +102,11 @@ setTimeout(function() {
     btn2.click(function() {
         $('span[data-spm="d_order_table_pagination"]').click();
         $('p[data-spm="d_order_table_pagination_50"]').click();
+        
+        $('span.next-pagination-size-selector-dropdown').click();
+        setTimeout(function(){
+            $('.next-overlay-wrapper.opened li:nth-child(3)').click();
+        },100);
     });
 
     var btn3_1 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Chọn các đơn hàng không tô màu"/>');
