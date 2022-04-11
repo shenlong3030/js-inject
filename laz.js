@@ -1,3 +1,5 @@
+// https://www.toptal.com/developers/javascript-minifier/
+
 //console.log("3");
 var lazUrl = "https://www.lazada.vn/"; //-i1358457802.html
 var toyProductsUrl = "https://toy1.phukiensh.com/lazop/products.php";
@@ -62,15 +64,21 @@ function injectToys(canDel = 0) {
     });
 }
 
-setTimeout(function() {
-    setTimeout(injectToys(), 2000);
+//setTimeout(injectToys(), 4000);
 
+setTimeout(function() {
     var body = $("body");
     var container = $('<div class="dialog"></div>');
-    container.prependTo(body);
-    container.dialog({
-        position: { my: "left bottom", at: "left bottom" }
-    });
+
+    if(window.location.href.includes("print")) {
+        //do nothing
+    } else {
+        container.prependTo(body);
+        container.dialog({
+            position: { my: "left bottom", at: "left bottom" }
+        });
+    }
+    
 
     var btn = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Inject toys"/>');
     btn.appendTo(container);
@@ -97,15 +105,12 @@ setTimeout(function() {
         injectToys(1);
     });
 
-    var btn2 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Hiện 50"/>');
+    var btn2 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Hiện tất cả"/>');
     btn2.appendTo(container);
     btn2.click(function() {
-        $('span[data-spm="d_order_table_pagination"]').click();
-        $('p[data-spm="d_order_table_pagination_50"]').click();
-        
         $('span.next-pagination-size-selector-dropdown').click();
         setTimeout(function(){
-            $('.next-overlay-wrapper.opened li:nth-child(3)').click();
+            $('.next-overlay-wrapper.opened li:last-child').click();
         },100);
     });
 
@@ -113,21 +118,16 @@ setTimeout(function() {
     btn3_1.appendTo(container);
     btn3_1.click(function() {
         // select all
-        $('.next-table-header input[data-spm="d_table_checkall"]').click();
+        console.log("select orders");
+        $('.list-toolbar-head input[type="checkbox"]').click();
 
         // unselect highlighted
         setTimeout(function() {
-            var checkList = [];
+            console.log("unselect highlighted");
             $(".chrome-extension-highlight").each(function() {
-                var cbContainer = $(this).closest(".order-sub-table");
-                var cbContainerId = cbContainer.attr("data-spm");
-                if (!checkList.includes(cbContainerId)) {
-                    console.log(cbContainerId);
-                    checkList.push(cbContainerId);
-
-                    var cb = cbContainer.find("input[type=checkbox]:first");
-                    cb.click();
-                }
+                var cbContainer = $(this).closest(".list-item-header");
+                var cb = cbContainer.find("input[type=checkbox]:first");
+                cb.click();
             });
         }, 500);
     });
@@ -136,24 +136,27 @@ setTimeout(function() {
     var btn4 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="In mã vận chuyển"/>');
     btn4.appendTo(container);
     btn4.click(function() {
-        $('.toolbar-container button[data-spm="d_print_module"]').click();
-        $('li[title="In mã vận chuyển"]').click();
+        $('.order-toolbar-actions-left button[data-spm="dbatch_print"]').click();
     });
 
     // button print HoaDon
     var btn5 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="In hóa đơn"/>');
     btn5.appendTo(container);
     btn5.click(function() {
-        $('.toolbar-container button[data-spm="d_print_module"]').click();
-        $('li[title="In hóa đơn"]').click();
+        $('.order-toolbar-actions-left button.next-split-btn-trigger').click();
+        setTimeout(function() {
+            $('.next-overlay-wrapper.opened li[title="In hóa đơn"]').click();
+        }, 200);
     });
 
     // button print DanhSachSP
     var btn6 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="In danh sách SP"/>');
     btn6.appendTo(container);
     btn6.click(function() {
-        $('.toolbar-container button[data-spm="d_print_module"]').click();
-        $('li[title="In danh sách sản phẩm được chọn"]').click();
+        $('.order-toolbar-actions-left button.next-split-btn-trigger').click();
+        setTimeout(function() {
+            $('.next-overlay-wrapper.opened li[title="In danh sách chọn"]').click();
+        }, 200);
     });
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,31 +169,11 @@ setTimeout(function() {
     var callbackTimer2 = null;
 
     var observer = new MutationObserver(function(mutationRecords) {
-        // view all record className
+        //view all record className
         // mutationRecords.forEach(function(record) {
         //    console.log(record.target.className);
         // });
         mutationRecords.some(function(record) {
-            // when print product list
-            if ($(record.target).hasClass("la-print-scroll")) {
-                // if many changes occur continuously, 
-                // only handle the last change
-                if (callbackTimer1) {
-                    clearTimeout(callbackTimer1);
-                }
-                callbackTimer1 = setTimeout(function() {
-                    $('.print-pick-list table tbody td').html(function(index, html) {
-                        return html.replace('Ốp lưng', 'Ốp') // xóa chữ 'lưng' trong tên SP
-                            .replace('[HCM]', '') // xóa [HCM] trong tên SP
-                            .replace(/Nhóm Màu:([^,.-]+)/, 'Màu:<strong>$1</strong>')
-                            .replace(/Dòng sản phẩm tương thích:([^,.-]+)/, 'Dòng:<strong>$1</strong>');
-
-                    });
-                    $(".print-pick-list table").tablesorter();
-                }, 1000);
-                return true; // break loop
-            }
-
             // when product list change
             // detect changes from div.next-card-free
             if ($(record.target).hasClass("next-card-free")) {
@@ -204,4 +187,21 @@ setTimeout(function() {
         });
     });
     observer.observe(document.body, config);
+}, 2000);
+
+setTimeout(function() {
+    if(window.location.href.includes("print")) {
+        var shadowRoot = $(".la-print-page")[0].shadowRoot;
+        var tb = shadowRoot.querySelector('.print-pick-list table');
+
+        // convert DOM tb to jquery $(tb)
+        $(tb).find('td').html(function(index, html) {
+            return html.replace('Ốp lưng', 'Ốp') // xóa chữ 'lưng' trong tên SP
+                .replace('[HCM]', '') // xóa [HCM] trong tên SP
+                .replace(/Nhóm Màu:([^,.-]+)/, 'Màu:<strong>$1</strong>')
+                .replace(/Dòng sản phẩm tương thích:([^,.-]+)/, 'Dòng:<strong>$1</strong>');
+
+        });
+        $(tb).tablesorter();
+    }
 }, 2000);
