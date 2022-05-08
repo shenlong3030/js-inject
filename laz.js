@@ -198,8 +198,8 @@ setTimeout(function() {
         $(tb).find('td').html(function(index, html) {
             return html.replace('Ốp lưng', 'Ốp') // xóa chữ 'lưng' trong tên SP
                 .replace('[HCM]', '') // xóa [HCM] trong tên SP
-                .replace(/Nhóm Màu:([^,.-]+)/, 'Màu:<strong>$1</strong>')
-                .replace(/Dòng sản phẩm tương thích:([^,.-]+)/, 'Dòng:<strong>$1</strong>');
+                .replace(/Nhóm Màu:([^,-]+)/g, '<br>Màu:<strong>$1</strong>')
+                .replace(/Dòng sản phẩm tương thích:([^,-]+)/g, '<br>Dòng:<strong>$1</strong>');
 
         });
         $(tb).tablesorter();
