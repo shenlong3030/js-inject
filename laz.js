@@ -136,7 +136,7 @@ setTimeout(function() {
     var btn4 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="In mã vận chuyển"/>');
     btn4.appendTo(container);
     btn4.click(function() {
-        $('.order-toolbar-actions-left button[data-spm="dbatch_print"]').click();
+        $('.order-toolbar-actions-left button[data-spm="d_batch_print_button"]').click();
     });
 
     // button print HoaDon
