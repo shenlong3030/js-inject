@@ -75,7 +75,7 @@ setTimeout(function() {
     } else {
         container.prependTo(body);
         container.dialog({
-            position: { my: "left bottom", at: "left bottom" }
+            position: { my: "left top", at: "left center" }
         });
     }
     
