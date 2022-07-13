@@ -18,6 +18,8 @@ function copyToClipBoard(text) {
 function injectToys(canDel = 0) {
     console.log("inject toys");
     $(".toy").remove();
+    
+    // link "Chỉnh Sửa" iterator, extract itemID
     $("a[data-spm='d_action_edit']").each(function(index) {
         var words = $(this).attr('href').split('productId=');
         var itemId = words[words.length - 1];
@@ -32,7 +34,11 @@ function injectToys(canDel = 0) {
         }
     });
 
-    $("span.copy-item .high-light-word").each(function() {
+    // show all SKUs
+    $("button[data-spm=d_sku_expand]").click();    
+    
+    // SKU node iterator, extract SKU
+    $("span.item-id .safe-html-text.high-light-word").each(function() {
         var rowNode = $(this).closest("tr");
         var priceCell = rowNode.find("td[data-next-table-col=2] div").first();
         var qtyCell = rowNode.find("td[data-next-table-col=3] div").first();
@@ -64,9 +70,9 @@ function injectToys(canDel = 0) {
     });
 }
 
-//setTimeout(injectToys(), 4000);
-
 setTimeout(function() {
+    injectToys();
+    
     var body = $("body");
     var container = $('<div class="dialog"></div>');
 
@@ -187,9 +193,9 @@ setTimeout(function() {
         });
     });
     observer.observe(document.body, config);
-}, 2000);
-
-setTimeout(function() {
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // handle printing pick list
     if(window.location.href.includes("print")) {
         var shadowRoot = $(".la-print-page")[0].shadowRoot;
         var tb = shadowRoot.querySelector('.print-pick-list table');
@@ -204,4 +210,5 @@ setTimeout(function() {
         });
         $(tb).tablesorter();
     }
-}, 2000);
+}, 4000);
+
