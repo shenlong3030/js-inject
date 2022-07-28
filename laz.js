@@ -81,7 +81,7 @@ setTimeout(function() {
     } else {
         container.prependTo(body);
         container.dialog({
-            position: { my: "left top", at: "left center" }
+            position: { my: "left top", at: "left center", width: 230}
         });
     }
     
@@ -142,7 +142,7 @@ setTimeout(function() {
     var btn4 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="In mã vận chuyển"/>');
     btn4.appendTo(container);
     btn4.click(function() {
-        $('.order-toolbar-actions-left button[data-spm="d_batch_print_button"]').click();
+        $('.order-toolbar-actions-left button[data-spm^="d_button_batch_print"]').click();
     });
 
     // button print HoaDon
