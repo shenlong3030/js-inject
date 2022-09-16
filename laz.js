@@ -33,9 +33,6 @@ function injectToys(canDel = 0) {
             alink.appendTo(editStockDiv);
         }
     });
-
-    // show all SKUs
-    $("button[data-spm=d_sku_expand]").click();    
     
     // SKU node iterator, extract SKU
     $("span.item-id .safe-html-text.high-light-word").each(function() {
@@ -70,6 +67,11 @@ function injectToys(canDel = 0) {
     });
 }
 
+function expandSKUs(){
+    // show all SKUs
+    $("button[data-spm=d_sku_expand]").click();    
+}
+
 setTimeout(function() {
     injectToys();
     
@@ -90,6 +92,12 @@ setTimeout(function() {
     btn.appendTo(container);
     btn.click(function() {
         injectToys();
+    });
+    
+    btn = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Expand SKUs"/>');
+    btn.appendTo(container);
+    btn.click(function() {
+        expandSKUs();
     });
 
     // show button copy URL
