@@ -135,13 +135,20 @@ setTimeout(function() {
         console.log("select orders");
         $('.list-toolbar-head input[type="checkbox"]').click();
 
+        var flagList = [];
         // unselect highlighted
         setTimeout(function() {
             console.log("unselect highlighted");
             $(".chrome-extension-highlight").each(function() {
-                var cbContainer = $(this).closest(".list-item-header");
-                var cb = cbContainer.find("input[type=checkbox]:first");
-                cb.click();
+                var cbContainer = $(this).closest(".list-item");
+                var header = cbContainer.find(".list-item-header");
+                var orderNumber = header.find(".order-field-value").text();
+                
+                if(!flagList[orderNumber]) { // only click once every order row
+                    var cb = header.find("input[type=checkbox]:first");
+                    cb.click();
+                    flagList[orderNumber] = 1;
+                }
             });
         }, 500);
     });
