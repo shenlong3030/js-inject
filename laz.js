@@ -78,16 +78,6 @@ setTimeout(function() {
     var body = $("body");
     var container = $('<div class="dialog"></div>');
 
-    if(window.location.href.includes("print")) {
-        //do nothing
-    } else {
-        container.prependTo(body);
-        container.dialog({
-            position: { my: "left top", at: "left center", width: 230}
-        });
-    }
-    
-
     var btn = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Inject toys"/>');
     btn.appendTo(container);
     btn.click(function() {
@@ -180,6 +170,16 @@ setTimeout(function() {
         }, 200);
     });
 
+    
+    if(window.location.href.includes("print")) {
+        //do nothing
+    } else {
+        container.prependTo(body);
+        container.dialog({
+            position: { my: "left bottom", at: "left bottom", width: 270}
+        });
+    }
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // tablesorter for picklist
     var config = {
