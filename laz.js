@@ -89,6 +89,12 @@ setTimeout(function() {
     btn.click(function() {
         expandSKUs();
     });
+    
+    btn = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Show ID sản phẩm"/>');
+    btn.appendTo(container);
+    btn.click(function() {
+        alert($(".order-field-order-line-id .order-field-value").append(",").text());
+    });
 
     // show button copy URL
     var btn1 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Copy URLs"/>');
