@@ -221,6 +221,12 @@ setTimeout(function() {
     // handle printing pick list
     if(window.location.href.includes("print")) {
         var shadowRoot = $(".la-print-page")[0].shadowRoot;
+        var sheet = new CSSStyleSheet();
+        sheet.replaceSync('.la-print-page { width: auto !important; }');
+        sheet.insertRule('.print-pick-list { width: auto !important; }');
+        sheet.insertRule('.la-print-page th:nth-child(3) { min-width: 500px!important; }');
+        shadowRoot.adoptedStyleSheets = [sheet];
+        
         var tb = shadowRoot.querySelector('.print-pick-list table');
 
         // convert DOM tb to jquery $(tb)
