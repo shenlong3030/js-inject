@@ -90,10 +90,12 @@ setTimeout(function() {
         expandSKUs();
     });
     
-    btn = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Show ID sản phẩm"/>');
+    btn = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Copy ID sản phẩm"/>');
     btn.appendTo(container);
     btn.click(function() {
-        alert($(".order-field-order-line-id .order-field-value").append(",").text());
+        let txt = $(".order-field-order-line-id .order-field-value").append(",").text();
+        copyToClipBoard(txt);
+        alert(txt);
     });
 
     // show button copy URL
