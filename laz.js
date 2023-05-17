@@ -224,7 +224,7 @@ setTimeout(function() {
         var sheet = new CSSStyleSheet();
         sheet.replaceSync('.la-print-page { width: auto !important; }');
         sheet.insertRule('.print-pick-list { width: auto !important; }');
-        sheet.insertRule('.la-print-page th:nth-child(3) { min-width: 500px!important; }');
+        //sheet.insertRule('.la-print-page th:nth-child(3) { min-width: 500px!important; }');
         shadowRoot.adoptedStyleSheets = [sheet];
         
         var tb = shadowRoot.querySelector('.print-pick-list table');
