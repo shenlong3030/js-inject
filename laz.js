@@ -187,7 +187,9 @@ setTimeout(function() {
             position: { my: "left bottom", at: "left bottom", width: 270}
         });
     }
-    
+}, 1000);
+
+setTimeout(function() {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // tablesorter for picklist
     var config = {
