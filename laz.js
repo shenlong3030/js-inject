@@ -5,7 +5,7 @@ var lazUrl = "https://www.lazada.vn/"; //-i1358457802.html
 var toyProductsUrl = "https://toy1.phukiensh.com/lazop/products.php";
 var toyProductUpdateUrl = "https://toy1.phukiensh.com/lazop/update_gui.php";
 var toyProductDel = "https://toy1.phukiensh.com/lazop/del.php";
-var toyProductUpdateApiUrl = "https://toy1.phukiensh.com/lazop/update-api.php";
+var toyProductUpdateApiUrl = "https://toy1.phukiensh.com/lazop/api_update.php";
 
 function copyToClipBoard(text) {
     var $temp = $("<textarea>");
