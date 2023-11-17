@@ -24,7 +24,15 @@ function injectToys(canDel = 0) {
         var words = $(this).attr('href').split('productId=');
         var itemId = words[words.length - 1];
         var productNode = $(this).closest("tr");
+        productNode.attr("item_id", itemId);
+        var nextNode = productNode.next(".next-table-expanded-row");
+        if(nextNode) {
+            nextNode.find("tr").each(function(){
+                $(this).attr("item_id", itemId);
+            });
+        }
 
+        // create Reactive link
         var editStockDiv = productNode.find("div.edit-stock").first();
         var lazLink = productNode.find("a.item-detail-name").first();
         if (lazLink.length === 0) { //inactive product
@@ -39,9 +47,10 @@ function injectToys(canDel = 0) {
         var rowNode = $(this).closest("tr");
         var priceCell = rowNode.find("td[data-next-table-col=2] div").first();
         var qtyCell = rowNode.find("td[data-next-table-col=3] div").first();
+        var itemId = rowNode.attr("item_id");
         
         var sku = $(this).text().trim();
-        var href = toyProductUpdateUrl + "?sku=" + sku;
+        var href = toyProductUpdateUrl + "?item_id=" + itemId + "&sku=" + sku;
         var ulink = $('<a class="toy" href="' + href + '" target="_blank">Update</a>');
         ulink.appendTo(priceCell);
         
@@ -59,7 +68,7 @@ function injectToys(canDel = 0) {
             qty0Link.appendTo(qtyCell);
         }
         
-        if (canDel) {
+        if(canDel) {
             var href = toyProductDel + "?skus=" + sku;
             var dlink = $('<a class="toy" href="' + href + '" target="_blank">&nbsp;DEL</a>');
             dlink.appendTo(priceCell);
