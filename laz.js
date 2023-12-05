@@ -50,7 +50,7 @@ function injectToys(canDel = 0) {
         var itemId = rowNode.attr("item_id");
         
         var sku = $(this).text().trim();
-        var href = toyProductUpdateUrl + "?item_id=" + itemId + "&sku=" + sku;
+        var href = toyProductUpdateUrl + `?sku=${sku}~~${itemId}`;
         var ulink = $('<a class="toy" href="' + href + '" target="_blank">Update</a>');
         ulink.appendTo(priceCell);
         
