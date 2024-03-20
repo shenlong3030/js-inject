@@ -196,7 +196,7 @@ setTimeout(function() {
             position: { my: "left bottom", at: "left bottom", width: 270}
         });
     }
-}, 1000);
+}, 2000);
 
 setTimeout(function() {
     ////////////////////////////////////////////////////////////////////////////////////////////////
