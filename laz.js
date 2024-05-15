@@ -187,6 +187,12 @@ setTimeout(function() {
         }, 200);
     });
 
+    // button close dialog
+    var btn7 = $('<input class="ui-button ui-widget ui-corner-all" type="button" value="Close"/>');
+    btn7.appendTo(container);
+    btn7.click(function() {
+       container.remove();
+    });
     
     if(window.location.href.includes("print")) {
         //do nothing
