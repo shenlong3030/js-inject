@@ -81,6 +81,12 @@ function expandSKUs(){
     $("button[data-spm=d_sku_expand]").click();    
 }
 
+var urlregex = /chat/i;
+if(urlregex.test(window.location.href)) {
+    console.log("no script for CHAT page");
+    exit();
+}
+
 setTimeout(function() {
     injectToys();
     
