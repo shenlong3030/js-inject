@@ -19,7 +19,7 @@ function injectToys(canDel = 0) {
     console.log("inject toys");
     $(".toy").remove();
     
-    // link "Chỉnh Sửa" iterator, extract itemID
+    // find link "Chỉnh sửa", extract itemID
     $("a[data-spm='d_action_edit']").each(function(index) {
         var words = $(this).attr('href').split('productId=');
         var itemId = words[words.length - 1];
@@ -31,18 +31,9 @@ function injectToys(canDel = 0) {
                 $(this).attr("item_id", itemId);
             });
         }
-
-        // create Reactive link
-        var editStockDiv = productNode.find("div.edit-stock").first();
-        var lazLink = productNode.find("a.item-detail-name").first();
-        if (lazLink.length === 0) { //inactive product
-            var href = toyProductUpdateApiUrl + "?item_id=" + itemId;
-            var alink = $('<a class="toy" href="' + href + '" target="_blank">Reactivate</a>');
-            alink.appendTo(editStockDiv);
-        }
     });
     
-    // SKU node iterator, extract SKU
+    // find SKU node, extract SKU
     $("span.item-id .safe-html-text.high-light-word").each(function() {
         var rowNode = $(this).closest("tr");
         var priceCell = rowNode.find("td[data-next-table-col=2] div").first();
@@ -53,26 +44,8 @@ function injectToys(canDel = 0) {
         var href = toyProductUpdateUrl + `?sku=${sku}~~${itemId}`;
         var ulink = $('<a class="toy" href="' + href + '" target="_blank">Update</a>');
         ulink.appendTo(priceCell);
-        
-        var currentQty = qtyCell.text() + 0;
-        if(currentQty.includes("H") || currentQty < 100 ) {
-            var href = toyProductUpdateApiUrl + "?sku=" + sku + "&qty=500&action=qty";
-            var qty500Link = $('<a class="toy" href="' + href + '" target="_blank">+500</a>');
-            $('<br>').appendTo(qtyCell);
-            qty500Link.appendTo(qtyCell);
-        }
-        if(currentQty > 0) {
-            var href = toyProductUpdateApiUrl + "?sku=" + sku + "&qty=0&action=qty";
-            var qty0Link = $('<a class="toy" href="' + href + '" target="_blank">=0</a>');
-            $('<br>').appendTo(qtyCell);
-            qty0Link.appendTo(qtyCell);
-        }
-        
-        if(canDel) {
-            var href = toyProductDel + "?skus=" + sku;
-            var dlink = $('<a class="toy" href="' + href + '" target="_blank">&nbsp;DEL</a>');
-            dlink.appendTo(priceCell);
-        }
+
+        //## can not change qty and delete product anymore because the API need SKUid, but we don't have it
     });
 }
 
@@ -81,15 +54,7 @@ function expandSKUs(){
     $("button[data-spm=d_sku_expand]").click();    
 }
 
-var urlregex = /chat/i;
-if(urlregex.test(window.location.href)) {
-    console.log("no script for CHAT page");
-    exit();
-}
-
-setTimeout(function() {
-    injectToys();
-    
+function createControlDialog(){
     var body = $("body");
     var container = $('<div class="dialog"></div>');
 
@@ -208,60 +173,90 @@ setTimeout(function() {
             position: { my: "left bottom", at: "left bottom", width: 270}
         });
     }
-}, 2000);
+}
 
-setTimeout(function() {
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // tablesorter for picklist
+////////////////////////////////////////////////////////////////////////////////////////////////
+// auto inject script when product list change
+function observeProductListChange(){
+    console.log("observing product list change");
     var config = {
         childList: true,
         subtree: true
     };
-    var callbackTimer1 = null;
-    var callbackTimer2 = null;
+    var callbackTimer = null;
 
     var observer = new MutationObserver(function(mutationRecords) {
-        //view all record className
-        // mutationRecords.forEach(function(record) {
-        //    console.log(record.target.className);
-        // });
         mutationRecords.some(function(record) {
-            // when product list change
-            // detect changes from div.next-card-free
-            if ($(record.target).hasClass("next-card-free")) {
-                if (callbackTimer2) {
-                    clearTimeout(callbackTimer2);
+            // log all records to debug
+            // if(record.addedNodes.length){
+            //     console.log(record);
+            // }
+
+            // detect product list tab changes: div.next-tabs-tabpane.active
+            if (record.addedNodes.length && $(record.target).hasClass("next-tabs-tabpane")) {
+                console.log("changes detected");
+                if (callbackTimer) {
+                    clearTimeout(callbackTimer);
                 }
-                callbackTimer2 = setTimeout(injectToys(), 2000);
+                callbackTimer = setTimeout(injectToys, 1000);
                 return true; // break loop
             }
-
+            // detect product expand: tbody.next-table-body
+            if (record.addedNodes.length && $(record.target).hasClass("next-table-body")) {
+                console.log("changes detected");
+                if (callbackTimer) {
+                    clearTimeout(callbackTimer);
+                }
+                callbackTimer = setTimeout(injectToys, 300);
+                return true; // break loop
+            }
         });
     });
     observer.observe(document.body, config);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// handle printing pick list
+function sortPickListPrintPage(){
+    var shadowRoot = $(".la-print-page")[0].shadowRoot;
+    var sheet = new CSSStyleSheet();
+    sheet.replaceSync('.la-print-page { width: auto !important; }');
+    sheet.insertRule('.print-pick-list { width: auto !important; }');
+    //sheet.insertRule('.la-print-page th:nth-child(3) { min-width: 500px!important; }');
+    shadowRoot.adoptedStyleSheets = [sheet];
     
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // handle printing pick list
-    if(window.location.href.includes("print")) {
-        var shadowRoot = $(".la-print-page")[0].shadowRoot;
-        var sheet = new CSSStyleSheet();
-        sheet.replaceSync('.la-print-page { width: auto !important; }');
-        sheet.insertRule('.print-pick-list { width: auto !important; }');
-        //sheet.insertRule('.la-print-page th:nth-child(3) { min-width: 500px!important; }');
-        shadowRoot.adoptedStyleSheets = [sheet];
-        
-        var tb = shadowRoot.querySelector('.print-pick-list table');
+    var tb = shadowRoot.querySelector('.print-pick-list table');
 
-        // convert DOM tb to jquery $(tb)
-        $(tb).find('td').html(function(index, html) {
-            return html.replace('Ốp lưng', 'Ốp') // xóa chữ 'lưng' trong tên SP
-                .replace('[HCM]', '') // xóa [HCM] trong tên SP
-                .replace(/Nhóm Màu:([^,-]+)/, '<br>Màu:<font color="red">$1</font>')
-                .replace(/Dòng sản phẩm tương thích:([^,-]+)/, '<br>Dòng:<font color="red">$1</font>')
-                .replace(/(chống sốc)/, '<font color="red">$1</font>');
+    // convert DOM tb to jquery $(tb)
+    $(tb).find('td').html(function(index, html) {
+        return html.replace('Ốp lưng', 'Ốp') // xóa chữ 'lưng' trong tên SP
+            .replace('[HCM]', '') // xóa [HCM] trong tên SP
+            .replace(/Nhóm Màu:([^,-]+)/, '<br>Màu:<font color="red">$1</font>')
+            .replace(/Dòng sản phẩm tương thích:([^,-]+)/, '<br>Dòng:<font color="red">$1</font>')
+            .replace(/(chống sốc)/, '<font color="red">$1</font>');
 
-        });
-        $(tb).tablesorter();
-    }
-}, 4000);
+    });
+    $(tb).tablesorter();
+}
+
+var urlregex = /chat/i;
+if(urlregex.test(window.location.href)) {
+    console.log("no script for CHAT page");
+    exit();
+}
+
+urlregex = /print/i;
+if(urlregex.test(window.location.href)) {
+    console.log("detected print page");
+    setTimeout(sortPickListPrintPage, 3000);
+    exit();
+}
+
+window.addEventListener("load", (event) => {    
+    console.log("window loaded");
+    setTimeout(injectToys, 2000);
+    setTimeout(createControlDialog, 1000);
+    observeProductListChange();
+});
+
 
