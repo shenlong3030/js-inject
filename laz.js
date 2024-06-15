@@ -1,4 +1,4 @@
-// https://www.toptal.com/developers/javascript-minifier/
+// https://codebeautify.org/minify-js
 
 //console.log("3");
 var lazUrl = "https://www.lazada.vn/"; //-i1358457802.html
@@ -198,7 +198,7 @@ function observeProductListChange(){
                 if (callbackTimer) {
                     clearTimeout(callbackTimer);
                 }
-                callbackTimer = setTimeout(injectToys, 1000);
+                callbackTimer = setTimeout(injectToys, 1800);
                 return true; // break loop
             }
             // detect product expand: tbody.next-table-body
@@ -208,6 +208,15 @@ function observeProductListChange(){
                     clearTimeout(callbackTimer);
                 }
                 callbackTimer = setTimeout(injectToys, 300);
+                return true; // break loop
+            }
+            // detect product list change page: div.next-table.next-table-medium.next-table-loading.next-table-fixed.pm-table-compact
+            if (record.addedNodes.length && $(record.target).hasClass("next-table")) {
+                console.log("changes detected");
+                if (callbackTimer) {
+                    clearTimeout(callbackTimer);
+                }
+                callbackTimer = setTimeout(injectToys, 1800);
                 return true; // break loop
             }
         });
