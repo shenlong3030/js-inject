@@ -192,31 +192,26 @@ function observeProductListChange(){
             //     console.log(record);
             // }
 
-            // detect product list tab changes: div.next-tabs-tabpane.active
-            if (record.addedNodes.length && $(record.target).hasClass("next-tabs-tabpane")) {
+            
+            // detect product list change: page change, page size change
+            // target: body
+            if (record.addedNodes.length && record.target.tagName.toUpperCase() == 'TBODY') {
                 console.log("changes detected");
                 if (callbackTimer) {
                     clearTimeout(callbackTimer);
                 }
-                callbackTimer = setTimeout(injectToys, 1800);
+                callbackTimer = setTimeout(injectToys, 900);
                 return true; // break loop
             }
-            // detect product expand: tbody.next-table-body
-            if (record.addedNodes.length && $(record.target).hasClass("next-table-body")) {
+
+            // detect product list change: tab change
+            // target: div.next-card.next-card-free.next-card-hide-divider.aplus-module-auto-exp
+            if (record.addedNodes.length && $(record.target).hasClass("next-card")) {
                 console.log("changes detected");
                 if (callbackTimer) {
                     clearTimeout(callbackTimer);
                 }
-                callbackTimer = setTimeout(injectToys, 300);
-                return true; // break loop
-            }
-            // detect product list change page: div.next-table.next-table-medium.next-table-loading.next-table-fixed.pm-table-compact
-            if (record.addedNodes.length && $(record.target).hasClass("next-table")) {
-                console.log("changes detected");
-                if (callbackTimer) {
-                    clearTimeout(callbackTimer);
-                }
-                callbackTimer = setTimeout(injectToys, 1800);
+                callbackTimer = setTimeout(injectToys, 900);
                 return true; // break loop
             }
         });
