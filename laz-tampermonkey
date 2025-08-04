@@ -70,7 +70,7 @@
         const button1 = createButtonElement('Chọn đơn không tô màu', 'js-btn');
         button1.addEventListener('click', () => {
             console.log(`Tìm và chọn đơn không tô màu`);
-            
+
             // Chọn tất cả checkbox trong .list-toolbar-head
             document.querySelectorAll('.list-toolbar-head input[type="checkbox"]').forEach(cb => cb.click());
 
@@ -114,7 +114,7 @@
         console.log(`floating-buttons-container created`);
     }
 
-    var urlregex = /order/i;
+    var urlregex = /order\/list/i;
     if(urlregex.test(window.location.href)) {
         setTimeout(createFloatingButton, 2000);
         return;
@@ -175,7 +175,7 @@
 
     // Kiểm tra xem có phải trang in không
     // Nếu có thì gọi hàm sortPickListPrintPage sau 3 giây
-    urlregex = /print/i;
+    urlregex = /order\/print/i;
     if(urlregex.test(window.location.href)) {
         console.log("detected print page");
         setTimeout(sortPickListPrintPage, 3000);
