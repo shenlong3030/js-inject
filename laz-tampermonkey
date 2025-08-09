@@ -121,6 +121,63 @@
     }
     // =================== KẾT THÚC BLOCK CÁC HÀM TẠO THÊM BUTTON================
 
+    // =================== BLOCK INJECT TOY VÀO DANH SÁCH SP CSS ===================
+    function injectToys(canDel = 0) {
+        console.log("inject toys");
+
+        let toyProductUpdateUrl = "https://toy1.phukiensh.com/lazop/update_gui.php";
+        // Xóa các phần tử có class "toy"
+        document.querySelectorAll('.toy').forEach(el => el.remove());
+
+        // Tìm các link "Chỉnh sửa", extract itemID
+        document.querySelectorAll("a[data-spm='d_action_edit']").forEach(link => {
+            const href = link.getAttribute('href');
+            const words = href.split('productId=');
+            const itemId = words[words.length - 1];
+            const productNode = link.closest("tr");
+            if (productNode) {
+                productNode.setAttribute("item_id", itemId);
+                const nextNode = productNode.nextElementSibling;
+                if (nextNode && nextNode.classList.contains("next-table-expanded-row")) {
+                    nextNode.querySelectorAll("tr").forEach(tr => {
+                        tr.setAttribute("item_id", itemId);
+                    });
+                }
+            }
+        });
+
+        // Tìm SKU node, extract SKU
+        document.querySelectorAll("span.item-id .safe-html-text.high-light-word").forEach(span => {
+            const rowNode = span.closest("tr");
+            if (!rowNode) return;
+            const priceCell = rowNode.querySelector("td[data-next-table-col='2'] div");
+            const qtyCell = rowNode.querySelector("td[data-next-table-col='3'] div");
+            const itemId = rowNode.getAttribute("item_id");
+            const sku = span.textContent.trim();
+            const href = toyProductUpdateUrl + `?sku=${sku}~~${itemId}`;
+            const ulink = document.createElement('a');
+            ulink.className = "toy";
+            ulink.href = href;
+            ulink.target = "_blank";
+            ulink.textContent = "Update";
+            if (priceCell) priceCell.appendChild(ulink);
+
+            //## can not change qty and delete product anymore because the API need SKUid, but we don't have it
+        });
+    }
+
+    // Kiểm tra xem có phải trang danh sách sản phẩm không
+    // Nếu có thì gọi hàm injectToys sau 3 giây
+    urlregex = /product\/list/i;
+    if(urlregex.test(window.location.href)) {
+        console.log("detected products page");
+        setTimeout(injectToys, 3000);
+        return;
+    }
+
+    // =================== KẾT THÚC BLOCK INJECT TOY VÀO DANH SÁCH SP CSS ===================
+
+
     // =================== BLOCK CÁC HÀM XỬ LÝ TRANG PICKLIST================
 
     // Hàm để sắp xếp bảng in
