@@ -1,0 +1,46 @@
+
+
+function clickXoa() {
+  const divs = document.querySelectorAll('div');
+  let clicked = false;
+
+  for (const div of divs) {
+    if (div.textContent.includes('Xóa')) {
+      div.click();
+      clicked = true;
+    }
+  }
+}
+
+function clickXem() {
+  const xemLink = document.querySelector('a[aria-label="Xem"]');
+  let clicked = false;
+
+  if (xemLink) {
+    const parentElement = xemLink.parentElement;
+    if (parentElement) {
+      const siblings = parentElement.parentElement.children;
+      for (const sibling of siblings) {
+        if (sibling.tagName === 'DIV' && sibling.getAttribute('aria-label') === 'Lựa chọn khác') {
+          sibling.click();
+          clicked = true;
+          break;
+        }
+      }
+    }
+  }
+}
+
+var count=3;
+var myInterval = setInterval(() => {
+  if(count == 0) {
+    clearInterval(myInterval);
+    return;
+  }
+  
+  clickXem();
+  setTimeout(clickXoa, 300);
+  setTimeout(clickXoa, 600);
+  count--;
+  
+}, 1500);
