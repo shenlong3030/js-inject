@@ -95,7 +95,7 @@
                     if (viewedIds.has(productId)) {
                         card.classList.add(VIEWED_CLASS);
                     }
-
+                    
                     // Hiển thị note nếu có
                     let noteDiv = card.querySelector('.tm-note');
                     if (!noteDiv) {
@@ -351,14 +351,19 @@
         // --- Thêm button Auto Scroll ---
         const autoScrollBtn = createButtonElement('Auto Scroll', 'js-btn-auto-scroll');
         autoScrollBtn.addEventListener('click', () => {
-            reset = false
-            let count = 0;
+            reset = false;
             function scrollStep() {
+                const before = window.scrollY;
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                count++;
-                if (count < 20 && !reset) { // Giới hạn số lần cuộn để tránh lặp vô hạn
-                    setTimeout(scrollStep, 2000);
-                }
+                setTimeout(() => {
+                    const after = window.scrollY;
+                    // Nếu không cuộn được nữa (vị trí không thay đổi), dừng lại
+                    if (after === before || reset) {
+                        console.log('Auto scroll stopped (reached bottom or reset)');
+                        return;
+                    }
+                    scrollStep();
+                }, 1200); // Đợi cho cuộn mượt xong
             }
             scrollStep();
             console.log('Auto scroll started');
