@@ -94,11 +94,11 @@
         container.appendChild(button1); // Thêm button vào container
 
         // 3. Tạo Button 2
-        const button2 = createButtonElement('Sort price', 'js-btn-sort-price');
+        const button2 = createButtonElement('Hiện nút update', 'js-btn-show-update');
         button2.addEventListener('click', () => {
-            console.log(`Successfully sorted price`);
+            injectToys();
         });
-        //container.appendChild(button2); // Thêm button vào container
+        container.appendChild(button2); // Thêm button vào container
 
         // Tạo Button 3
         const button3 = createButtonElement('Hide GRate', 'js-btn-hide-gr');
@@ -114,7 +114,7 @@
         console.log(`floating-buttons-container created`);
     }
 
-    var urlregex = /order\/list/i;
+    var urlregex = /sellercenter\.lazada/i;
     if(urlregex.test(window.location.href)) {
         setTimeout(createFloatingButton, 2000);
         return;
@@ -150,6 +150,11 @@
         document.querySelectorAll("span.item-id .safe-html-text.high-light-word").forEach(span => {
             const rowNode = span.closest("tr");
             if (!rowNode) return;
+
+            // Nếu cha (parentElement) của span không chứa text "SKU" thì bỏ qua
+            const parentText = (span.parentElement && span.parentElement.textContent) ? span.parentElement.textContent.trim() : '';
+            if (!/SKU/i.test(parentText)) return;
+
             const priceCell = rowNode.querySelector("td[data-next-table-col='2'] div");
             const qtyCell = rowNode.querySelector("td[data-next-table-col='3'] div");
             const itemId = rowNode.getAttribute("item_id");
