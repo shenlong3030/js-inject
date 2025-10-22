@@ -115,7 +115,8 @@
     }
 
     var urlregex = /sellercenter\.lazada/i;
-    if(urlregex.test(window.location.href)) {
+    var printPageRegex = /print/i;
+    if(urlregex.test(window.location.href) && !printPageRegex.test(window.location.href)) {
         setTimeout(createFloatingButton, 2000);
         return;
     }
